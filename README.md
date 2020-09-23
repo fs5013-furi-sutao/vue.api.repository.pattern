@@ -1,5 +1,5 @@
 # vue.api.repository.pattern
-Vue.js を使用した Web API 呼び出しの Repository パターンサンプル
+Repository パターンを使用して Vue.js で API データを使用する方法について説明する。
 
 ## Project setup
 ```console
