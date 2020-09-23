@@ -172,10 +172,10 @@ posts.vuex.js
 <template>
   <div class="container">
     <div class="row">
-      <Post v-for="(post, i) in posts" :key="i" :posts="post" />
+      <Post v-for="(student, i) in students" :key="i" :students="student" />
       <div class="col-lg-8 col-md-10 mx-auto">
         <div class="clearfix">
-          <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
+          <a class="btn btn-primary float-right" href="#">Older Students &rarr;</a>
         </div>
       </div>
     </div>
@@ -185,18 +185,18 @@ posts.vuex.js
 <script>
 import { mapState } from "vuex";
 
-import Post from "./Post";
+import Student from "./Student";
 export default {
-  name: "Posts",
+  name: "Students",
   components: {
-    Post
+    Student
   },
 
   computed: {
-    ...mapState(["posts"])
+    ...mapState(["students"])
   },
   created() {
-    this.$store.dispatch("getPosts", { self: this });
+    this.$store.dispatch("getStudents", { self: this });
   },
   methods: {}
 };
@@ -205,3 +205,6 @@ export default {
 <style scoped>
 </style>
 ```
+
+### まとめ
+リポジトリー設計パターンを使用すると、コンポーネントがクリーンで少ないコードで記述できるため、これまでに示したようにコードの結合度を減らすことができる。
