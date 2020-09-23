@@ -1,6 +1,27 @@
 # vue.api.repository.pattern
 Vue.js を使用した Web API 呼び出しの Repository パターンサンプル
 
+## Project setup
+```console
+yarn install
+```
+### Compiles and hot-reloads for development
+```console
+yarn run serve
+```
+### Compiles and minifies for production
+```console
+yarn run build
+```
+### Run your tests
+```console
+yarn run test
+```
+### Lints and fixes files
+```console
+yarn run lint
+```
+
 ## Vue で API を呼ぶシンプルな方法
 Repository パターンは、アプリケーションを作成するのに一般的となるパターンの 1 つである。これにより、アプリケーション内のデータを直接操作することが制限され、データベース操作、ビジネスロジック、およびアプリケーション UI の新しいレイヤーが作成される。
 
