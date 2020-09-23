@@ -36,31 +36,131 @@ export default axios.create({
 ```
 
 ### 個別のリポジトリクラスを作成する
-これらのクラスに何が含まれるか、アプリケーションの特定の機能内で実行されるさまざまな API 操作を推測する必要がある。アプリケーションの 1 つの機能である POST を使用してデモを行う。
-そこで、`repositories` フォルダー内に PostRepository.js ファイルを作成し、以下のコードなどを追加する。
+これらのクラスに何が含まれるか、アプリケーションの特定の機能内で実行されるさまざまな API 操作を推測する必要がある。アプリケーションの 1 つの機能である Student を使用してデモを行う。
+そこで、`repositories` フォルダー内に StudentRepository.js ファイルを作成し、以下のコードなどを追加する。
 
-PostRepository.js
+StudentRepository.js
 ```javascript
-import Client from './Clients/AxiosClient';
-const resource = '/posts';
+import Repository from './Clients/Repository';
+const resource = '/students';
 
 export default {
     get() {
-        return Client.get(`${resource}`);
+        return Repository.get(`${resource}`);
     },
-    getPost(id) {
-        return Client.get(`${resource}/${id}`);
+    getStudent(id) {
+        return Repository.get(`${resource}/${id}`);
     },
     create(payload) {
-        return Client.post(`${resource}`, payload);
+        return Repository.post(`${resource}`, payload);
     },
     update(payload, id) {
-        return Client.put(`${resource}/${id}`, payload);
+        return Repository.put(`${resource}/${id}`, payload);
     },
     delete(id) {
-        return Client.delete(`${resource}/${id}`)
+        return Repository.delete(`${resource}/${id}`)
     },
 
     // MANY OTHER ENDPOINT RELATED STUFFS
 };
+```
+
+### RepositoryFactory.js クラスを作成する
+`RepositoryFactory` と呼ばれる` repositories` フォルダ内にファクトリクラスを作成して、作成したすべての個別のリポジトリをエクスポートする。これにより、アプリケーション全体でどこでも簡単に使用できるようになる。
+
+RepositoryFactory.js
+```javascript
+import PostRepository from './TeacherRepository';
+import UserRepository from './StudentRepository';
+
+const repositories = {
+    'teachers': TeacherRepository,
+    'students': StudentRepository
+}
+export default {
+    get: name => repositories[name]
+};
+```
+
+### モデル、コントローラー、Vuex ストアのいずれかで使用する
+Vue.js を扱っているため、Vue コンポーネントと Vuex ストアでの使用方法を示す。しかし、モデル、コントローラ、実際にはどこでもそれを使用するアプローチ同じとなる。
+
+Posts.js 
+```javascript
+<template>
+  <div class="row">
+    <Post v-for="(post, i) in posts" :key="i" :posts="post" />
+    <div class="col-lg-8 col-md-10 mx-auto">
+      <div class="clearfix">
+        <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import Repository from "../repositories/RepositoryFactory";
+const PostRepository = Repository.get("posts");
+
+import Post from "./Post";
+export default {
+  name: "Posts",
+  components: {
+    Post
+  },
+  data() {
+    return {
+      posts: []
+    };
+  },
+  created() {
+    this.getPosts();
+  },
+  methods: {
+    getPosts: async function() {
+      const { data } = await PostRepository.get();
+      this.posts = data;
+    }
+  }
+};
+</script>
+```
+
+### Vuex ストアで使用する
+`store.js` ファイルを作成する。
+
+store.js
+```javascript
+import Vue from 'vue';
+import Vuex from 'vuex';
+
+import Repository from "./repositories/RepositoryFactory";
+const StudentRepository = Repository.get("students");
+
+Vue.use(Vuex)
+
+const store = new Vuex.Store({
+    state: {
+        stiudents: [],
+    },
+
+    actions: {
+        async getStudents({
+            commit
+        }) {
+            commit('loadPosts', await StudentRepository.get());
+        },
+    },
+
+    mutations: {
+        loadStudents: (state, res) => {
+            const {
+                data
+            } = res;
+            state.students = data
+        },
+
+    }
+});
+export default store
 ```
